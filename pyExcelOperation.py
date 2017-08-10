@@ -54,5 +54,42 @@ class easyExcel:
             sht.Cells(bottomRow, rightCol)
             ).Value = data
 
-    # def findColPosition():
-    #     "在targetExcel中找到最后一天的记录，并在其右侧插入空白列"
+    def getColCount(self,sheet,row,col):
+
+        sht = self.xlBook.Worksheets(sheet)
+
+        # right column
+        right = col
+        while sht.Cells(row, right + 1).Value not in [None, '']:
+            right = right + 1
+        return right
+
+    def getRowCount(self,sheet,row,col):
+
+        sht = self.xlBook.Worksheets(sheet)
+
+        # find the bottom row
+        bottom = row
+        while sht.Cells(bottom + 1, col).Value not in [None, '']:
+            bottom = bottom + 1
+        return bottom
+
+    def getContiguousRange(self, sheet, row, col):
+        """Tracks down and across from top left cell until it
+        encounters blank cells; returns the non-blank range.
+        Looks at first row and column; blanks at bottom or right
+        are OK and return None witin the array"""
+
+        sht = self.xlBook.Worksheets(sheet)
+
+        # find the bottom row
+        bottom = row
+        while sht.Cells(bottom + 1, col).Value not in [None, '']:
+            bottom = bottom + 1
+
+        # right column
+        right = col
+        while sht.Cells(row, right + 1).Value not in [None, '']:
+            right = right + 1
+
+        return sht.Range(sht.Cells(row, col), sht.Cells(bottom, right)).Value
